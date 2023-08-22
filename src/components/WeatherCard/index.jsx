@@ -1,10 +1,13 @@
 import devider from "../../assets/images/Divider.png";
-import clear from "../../assets/images/clear.png";
 
 function WeatherCard(props) {
-  console.log(props);
   return (
-    <div className="container">
+    <div
+      className="container"
+      style={{
+        backgroundImage: `url(${props.backgroundImage[0]})`,
+      }}
+    >
       <div className="info">
         <div className="locationDate">
           <span className="location">
@@ -23,9 +26,7 @@ function WeatherCard(props) {
           <span className="forecast">{props.weather}</span>
         </div>
       </div>
-      <div className="icon">
-        <img src={clear} />
-      </div>
+      <img className="icon" src={props.backgroundImage[1]} />
     </div>
   );
 }
