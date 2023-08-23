@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { WeatherCard } from "./components";
 import "./App.css";
 import "./css/WeatherCard.css";
@@ -30,6 +30,9 @@ import {
   stormNBG,
 } from "./assets";
 
+import logo from "../src/assets/images/Logo.svg";
+import { WeatherDetails } from "./components/WeatherDetails";
+
 const api = {
   key: "859b0e64994f154721fc4e8a5e75545d",
   base: "https://api.openweathermap.org/data/2.5/",
@@ -42,22 +45,19 @@ function App() {
 
   const [backgroundImage, setBackgroundImage] = useState("");
 
-  const search = (evt) => {
+  async function search(evt) {
+    const url1 = `${api.base}weather?q=${query}&appid=${api.key}&units=metric`;
+    const url2 = `${api.base}forecast?q=${query}&appid=${api.key}&units=metric`;
     if (evt.key === "Enter") {
-      fetch(`${api.base}weather?q=${query}&appid=${api.key}&units=metric`)
-        .then((res) => res.json())
-        .then((result) => {
-          setWeather(result);
-          setBackgroundImage(codeMapping[result.weather[0].icon]);
-          setQuery("");
-        });
-      fetch(`${api.base}forecast?q=${query}&appid=${api.key}&units=metric`)
-        .then((res) => res.json())
-        .then((result) => {
-          setNextWeather(result.list);
-        });
+      const res = await Promise.all([fetch(url1), fetch(url2)]);
+      const today = await res[0].json();
+      const next = await res[1].json();
+      setWeather(today);
+      setBackgroundImage(codeMapping[today.weather[0].icon]);
+      setQuery("");
+      setNextWeather(next.list);
     }
-  };
+  }
 
   const codeMapping = {
     "01d": [clearDBG, clearD],
@@ -120,19 +120,32 @@ function App() {
 
   return (
     <div className="App">
-      <main>
-        <div className="search-box">
-          <input
-            type="text"
-            className="search-bar"
-            placeholder="Search..."
-            onChange={(e) => setQuery(e.target.value)}
-            value={query}
-            onKeyPress={search}
-          />
-        </div>
-        {typeof weather.main != "undefined" ? (
-          <div>
+      <div className="search-box">
+        <input
+          type="text"
+          className="actions-search"
+          placeholder="Search..."
+          onChange={(e) => setQuery(e.target.value)}
+          value={query}
+          onKeyPress={search}
+        />
+      </div>
+      {weather.main && nextWeather.main != "undefined" ? (
+        <div className="content">
+          <div className="card">
+            <div className="actions">
+              <div className="home">
+                <img src={logo} />
+              </div>
+              <input
+                type="text"
+                className="actions-search"
+                placeholder="Search..."
+                onChange={(e) => setQuery(e.target.value)}
+                value={query}
+                onKeyPress={search}
+              />
+            </div>
             <WeatherCard
               backgroundImage={backgroundImage}
               location={weather.name}
@@ -143,10 +156,26 @@ function App() {
               sys={weather.sys.country}
             />
           </div>
-        ) : (
-          ""
-        )}
-      </main>
+          <WeatherDetails
+            temp={nextWeather[0].main.feels_like}
+            rain={nextWeather[0].pop}
+            wind={weather.wind.speed}
+            humid={weather.main.humidity}
+          />
+          <div className="next">
+            <span>Today's weather details</span>
+            <ul>
+              <li>Thermal sensation</li>
+              <li>Rain probability</li>
+              <li>Wind speed</li>
+              <li>Air humidity</li>
+              <li>UV index</li>
+            </ul>
+          </div>
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 }
