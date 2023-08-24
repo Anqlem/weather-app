@@ -1,0 +1,86 @@
+.next{
+    grid-area: next;
+    display: flex;
+    width: 582px;
+    height: 282px;
+    padding: 28px 24px 24px 24px;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    gap: 20px;
+    border-radius: 12px;
+    background: var(--base-gray-800, #16161F);
+  }
+
+  .next span{
+    color: var(--base-gray-400, #7F7F98);
+
+    /* Text md */
+    font-family: Nunito;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 140%; /* 22.4px */
+  }
+
+  .list{
+    padding-left: 0px;
+    display: flex;
+    height: 212px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .list span{
+    color: var(--base-gray-200, #BFBFD4);
+    text-align: center;
+
+    /* Heading xs */
+    font-family: Nunito;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 140%; /* 19.6px */
+  }
+
+  .list li{
+    display: flex;
+    width: 116px;
+    height: 212px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    flex: 1 0 0;
+    align-self: stretch;
+  }
+
+  .nextInfo{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .nextInfo span{
+    color: var(--base-gray-200, #BFBFD4);
+
+/* Text sm */
+    font-family: Nunito;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 140%; /* 19.6px */
+  }
+
+  .nextTemp span{
+    color: var(--base-gray-100, #FAFAFA);
+text-align: center;
+
+/* Heading xs */
+font-family: Nunito;
+font-size: 14px;
+font-style: normal;
+font-weight: 700;
+line-height: 140%; /* 19.6px */
+  }

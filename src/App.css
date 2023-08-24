@@ -149,16 +149,3 @@ body{
   line-height: 140%; /* 28px */
 }
 
-.next{
-  grid-area: next;
-  display: flex;
-  width: 582px;
-  height: 282px;
-  padding: 28px 24px 24px 24px;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: flex-start;
-  gap: 20px;
-  border-radius: 12px;
-  background: var(--base-gray-800, #16161F);
-}

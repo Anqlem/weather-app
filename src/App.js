@@ -2,6 +2,7 @@ import { useState } from "react";
 import { WeatherCard } from "./components";
 import "./App.css";
 import "./css/WeatherCard.css";
+import "./css/WeatherNextDays.css";
 
 import {
   clearDBG,
@@ -32,6 +33,8 @@ import {
 
 import logo from "../src/assets/images/Logo.svg";
 import { WeatherDetails } from "./components/WeatherDetails";
+import { WeatherNextDays } from "./components/WeatherNextDays";
+import { isVisible } from "@testing-library/user-event/dist/utils";
 
 const api = {
   key: "859b0e64994f154721fc4e8a5e75545d",
@@ -42,8 +45,12 @@ function App() {
   const [query, setQuery] = useState("");
   const [weather, setWeather] = useState({});
   const [nextWeather, setNextWeather] = useState({});
+  const [date, setDate] = useState({});
+
+  const [isData, setIsData] = useState(false);
 
   const [backgroundImage, setBackgroundImage] = useState("");
+  const [nextBackgroundImage, setNextBackgroundImage] = useState({});
 
   async function search(evt) {
     const url1 = `${api.base}weather?q=${query}&appid=${api.key}&units=metric`;
@@ -52,10 +59,24 @@ function App() {
       const res = await Promise.all([fetch(url1), fetch(url2)]);
       const today = await res[0].json();
       const next = await res[1].json();
+      var nextIcons = [];
+      var weatherArray = [];
+      var dates = [];
       setWeather(today);
       setBackgroundImage(codeMapping[today.weather[0].icon]);
+      next.list.map((x, y) => {
+        if (y === 7 || y === 15 || y === 23 || y === 31 || y === 39) {
+          weatherArray.push(x);
+          nextIcons.push(codeMapping[x.weather[0].icon]);
+          var fullDates = dateBuilder(new Date(x.dt_txt));
+          dates.push(fullDates);
+        }
+      });
+      setIsData(true);
+      setDate(dates);
+      setNextBackgroundImage(nextIcons);
+      setNextWeather(weatherArray);
       setQuery("");
-      setNextWeather(next.list);
     }
   }
 
@@ -85,7 +106,7 @@ function App() {
     return `${time}`;
   };
 
-  const dateBuilder = (d) => {
+  function dateBuilder(d) {
     let months = [
       "January",
       "February",
@@ -116,26 +137,37 @@ function App() {
     let year = d.getFullYear();
 
     return `${day}, ${date} ${month} ${year}`;
-  };
+  }
 
   return (
     <div className="App">
-      <div className="search-box">
-        <input
-          type="text"
-          className="actions-search"
-          placeholder="Search..."
-          onChange={(e) => setQuery(e.target.value)}
-          value={query}
-          onKeyPress={search}
-        />
-      </div>
-      {weather.main && nextWeather.main != "undefined" ? (
+      {isData == true ? (
+        <></>
+      ) : (
+        <div className="welcome">
+          <div className="title">
+            <span className="Heading-lg">Welcome to TypeWeather</span>
+            <span className="Text-lg">
+              Choose a location to view the weather forecast
+            </span>
+          </div>
+          <input
+            type="text"
+            className="actions-search"
+            placeholder="Search..."
+            onChange={(e) => setQuery(e.target.value)}
+            value={query}
+            onKeyPress={search}
+          />
+        </div>
+      )}
+
+      {weather.main && nextWeather.main !== "undefined" ? (
         <div className="content">
           <div className="card">
             <div className="actions">
               <div className="home">
-                <img src={logo} />
+                <img src={logo} alt="logo" />
               </div>
               <input
                 type="text"
@@ -162,16 +194,11 @@ function App() {
             wind={weather.wind.speed}
             humid={weather.main.humidity}
           />
-          <div className="next">
-            <span>Today's weather details</span>
-            <ul>
-              <li>Thermal sensation</li>
-              <li>Rain probability</li>
-              <li>Wind speed</li>
-              <li>Air humidity</li>
-              <li>UV index</li>
-            </ul>
-          </div>
+          <WeatherNextDays
+            weatherIcon={nextBackgroundImage}
+            weather={nextWeather}
+            date={date}
+          />
         </div>
       ) : (
         ""
