@@ -32,9 +32,9 @@ import {
 } from "./assets";
 
 import logo from "../src/assets/images/Logo.svg";
+import loading from "../src/assets/images/icons/loading.svg";
 import { WeatherDetails } from "./components/WeatherDetails";
 import { WeatherNextDays } from "./components/WeatherNextDays";
-import { isVisible } from "@testing-library/user-event/dist/utils";
 
 const api = {
   key: "859b0e64994f154721fc4e8a5e75545d",
@@ -49,6 +49,8 @@ function App() {
 
   const [isData, setIsData] = useState(false);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const [backgroundImage, setBackgroundImage] = useState("");
   const [nextBackgroundImage, setNextBackgroundImage] = useState({});
 
@@ -56,14 +58,13 @@ function App() {
     const url1 = `${api.base}weather?q=${query}&appid=${api.key}&units=metric`;
     const url2 = `${api.base}forecast?q=${query}&appid=${api.key}&units=metric`;
     if (evt.key === "Enter") {
+      setIsLoading(true);
       const res = await Promise.all([fetch(url1), fetch(url2)]);
       const today = await res[0].json();
       const next = await res[1].json();
       var nextIcons = [];
       var weatherArray = [];
       var dates = [];
-      setWeather(today);
-      setBackgroundImage(codeMapping[today.weather[0].icon]);
       next.list.map((x, y) => {
         if (y === 7 || y === 15 || y === 23 || y === 31 || y === 39) {
           weatherArray.push(x);
@@ -72,11 +73,17 @@ function App() {
           dates.push(fullDates);
         }
       });
-      setIsData(true);
-      setDate(dates);
-      setNextBackgroundImage(nextIcons);
-      setNextWeather(weatherArray);
-      setQuery("");
+
+      setTimeout(() => {
+        setWeather(today);
+        setBackgroundImage(codeMapping[today.weather[0].icon]);
+        setDate(dates);
+        setNextBackgroundImage(nextIcons);
+        setNextWeather(weatherArray);
+        setQuery("");
+        setIsData(true);
+        setIsLoading(false);
+      }, 500);
     }
   }
 
@@ -100,10 +107,14 @@ function App() {
   };
 
   const timeBuilder = () => {
-    const date = new Date();
-    const time = date.getHours() + ":" + date.getMinutes();
+    const timezone = weather.timezone;
+    const date = new Date().getTime() + timezone * 1000;
+    const localtime = new Date(date);
+    //const time = date.getHours() + ":" + date.getMinutes();
+    console.log(`${localtime.toLocaleTimeString()}`);
+    console.log(timezone);
 
-    return `${time}`;
+    return `${localtime}`;
   };
 
   function dateBuilder(d) {
@@ -141,67 +152,87 @@ function App() {
 
   return (
     <div className="App">
-      {isData == true ? (
+      {isData === true ? (
         <></>
       ) : (
         <div className="welcome">
           <div className="title">
-            <span className="Heading-lg">Welcome to TypeWeather</span>
-            <span className="Text-lg">
-              Choose a location to view the weather forecast
-            </span>
+            <span>Choose a location to view the weather forecast</span>
           </div>
-          <input
-            type="text"
-            className="actions-search"
-            placeholder="Search..."
-            onChange={(e) => setQuery(e.target.value)}
-            value={query}
-            onKeyPress={search}
-          />
+          <div className="input-container">
+            <input
+              type="text"
+              className="welcome-search"
+              placeholder="Search..."
+              onChange={(e) => setQuery(e.target.value)}
+              value={query}
+              disabled={isLoading}
+              onKeyPress={search}
+            />
+            {isLoading === true ? (
+              <div className="icon-container">
+                <img src={loading} alt="loading" className="loader"></img>
+              </div>
+            ) : (
+              <></>
+            )}
+          </div>
         </div>
       )}
 
-      {weather.main && nextWeather.main !== "undefined" ? (
-        <div className="content">
-          <div className="card">
-            <div className="actions">
-              <div className="home">
-                <img src={logo} alt="logo" />
+      {isData === true ? (
+        <div className="content-container">
+          <div className="content">
+            <div className="card">
+              <div className="actions">
+                <div className="home">
+                  <img src={logo} alt="logo" />
+                </div>
+                <div className="input-container">
+                  <input
+                    type="text"
+                    className="actions-search"
+                    placeholder="Search..."
+                    onChange={(e) => setQuery(e.target.value)}
+                    value={query}
+                    disabled={isLoading}
+                    onKeyPress={search}
+                  />
+                  {isLoading === true ? (
+                    <div className="icon-container">
+                      <img src={loading} alt="loading" className="loader"></img>
+                    </div>
+                  ) : (
+                    <></>
+                  )}
+                </div>
               </div>
-              <input
-                type="text"
-                className="actions-search"
-                placeholder="Search..."
-                onChange={(e) => setQuery(e.target.value)}
-                value={query}
-                onKeyPress={search}
+
+              <WeatherCard
+                backgroundImage={backgroundImage}
+                location={weather.name}
+                date={dateBuilder(new Date())}
+                time={timeBuilder()}
+                main={weather.main}
+                weather={weather.weather[0].main}
+                sys={weather.sys.country}
               />
             </div>
-            <WeatherCard
-              backgroundImage={backgroundImage}
-              location={weather.name}
-              date={dateBuilder(new Date())}
-              time={timeBuilder()}
-              main={weather.main}
-              weather={weather.weather[0].main}
-              sys={weather.sys.country}
+            <WeatherDetails
+              temp={nextWeather[0].main.feels_like}
+              rain={nextWeather[0].pop}
+              wind={weather.wind.speed}
+              humid={weather.main.humidity}
+            />
+            <WeatherNextDays
+              weatherIcon={nextBackgroundImage}
+              weather={nextWeather}
+              date={date}
             />
           </div>
-          <WeatherDetails
-            temp={nextWeather[0].main.feels_like}
-            rain={nextWeather[0].pop}
-            wind={weather.wind.speed}
-            humid={weather.main.humidity}
-          />
-          <WeatherNextDays
-            weatherIcon={nextBackgroundImage}
-            weather={nextWeather}
-            date={date}
-          />
         </div>
       ) : (
-        ""
+        <></>
       )}
     </div>
   );

@@ -6,31 +6,31 @@ import humid from "../../assets/images/icons/Type=drop-light.svg";
 function WeatherDetails(props) {
   return (
     <div className="details">
-      <span>Today's weather details</span>
+      <span className="details-name">Today's weather details</span>
       <ul className="detail-list">
         <li>
-          <div className="title">
+          <div className="details-title">
             <img src={temp} />
             Thermal sensation
           </div>
           <span>{Math.round(props.temp)}°c</span>
         </li>
         <li>
-          <div className="title">
+          <div className="details-title">
             <img src={rain} />
             Rain probability
           </div>
           <span>{props.rain}%</span>
         </li>
         <li>
-          <div className="title">
+          <div className="details-title">
             <img src={wind} />
             Wind speed
           </div>
           <span>{Math.round(props.wind)} m/s</span>
         </li>
         <li>
-          <div className="title">
+          <div className="details-title">
             <img src={humid} />
             Air humidity
           </div>

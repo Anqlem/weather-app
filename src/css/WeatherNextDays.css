@@ -84,3 +84,21 @@ font-style: normal;
 font-weight: 700;
 line-height: 140%; /* 19.6px */
   }
+
+  @media (max-width: 768px){
+    .next{
+      width: 342px;
+      padding: 10px;
+
+      display: unset;
+      height: unset;
+    }
+
+    .list li{
+      width: 67px;
+    }
+
+    .next-name{
+      display: none;
+    }
+  }

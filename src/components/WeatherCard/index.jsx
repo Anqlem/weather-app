@@ -15,7 +15,6 @@ function WeatherCard(props) {
           </span>
           <span className="date">{props.date}</span>
         </div>
-        <span className="time">11:32</span>
       </div>
       <div className="weather">
         <div className="temp">{Math.round(props.main.temp)}°c</div>
@@ -26,7 +25,9 @@ function WeatherCard(props) {
           <span className="forecast">{props.weather}</span>
         </div>
       </div>
-      <img className="icon" src={props.backgroundImage[1]} />
+      <div className="weather-icon-container">
+        <img className="icon" src={props.backgroundImage[1]} />
+      </div>
     </div>
   );
 }

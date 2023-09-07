@@ -2,7 +2,7 @@ function WeatherNextDays(props) {
   console.log(props);
   return (
     <div className="next">
-      <span>Forecast for 5 days</span>
+      <span className="next-name">Forecast for 5 days</span>
       <ul className="list">
         <li>
           <span>{props.date[0].split(",")[0]}</span>
