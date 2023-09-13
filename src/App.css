@@ -10,9 +10,15 @@ body{
   width: auto;
   height: auto;
   color: white;
-  background-image: url("./assets/images/Background.png");
-  background: #13131A;
+  background: var(--base-gray-900, #13131A);
+
   
+}
+
+.content-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .content {
@@ -55,9 +61,7 @@ body{
 
 .welcome-search{
   display: flex;
-  height: 64px;
-  width: 512px;
-  padding: 0px 20px;
+  width: 532px;
   appearance: none;
   justify-content: center;
   align-items: center;
@@ -189,9 +193,7 @@ text-xs{
 
 .actions-search{
   display: flex;
-  height: 56px;
-  width: 512px;
-  padding: 0px 20px;
+  width: 555px;
   appearance: none;
   justify-content: center;
   align-items: center;
@@ -203,6 +205,59 @@ text-xs{
   line-height: 140%;
   font-weight: normal;
 }
+
+.MuiOutlinedInput-notchedOutline{
+  border-color: transparent;
+  border-radius: 8px;
+}
+.MuiAutocomplete-noOptions
+{
+  color: #FAFAFA;
+  border-radius: 8px;
+  background: var(--base-gray-500, #3B3B54);
+}
+
+.MuiOutlinedInput-notchedOutline-focused{
+  border-color: transparent;
+}
+
+.MuiOutlinedInput-notchedOutline:hover{
+  border-color: transparent;
+}
+
+.MuiInputBase-root.MuiOutlinedInput-root{
+  font-family: "Nunito";
+  font-size: 16px;
+  line-height: 140%;
+  font-weight: normal;
+  border-color: transparent;
+  color: #FAFAFA;
+  border-radius: 8px;
+}
+
+.MuiFormLabel-root.MuiInputLabel-root{
+  font-family: "Nunito";
+  color:#7F7F98;
+}
+
+.MuiAutocomplete-popper{
+  padding: 8px;
+  color: white;
+}
+
+
+.MuiPaper-root.MuiAutocomplete-paper{
+  background-color: transparent;
+  color: #FAFAFA;
+}
+
+.MuiAutocomplete-listbox{
+  border-radius: 8px;
+  color: white;
+  background: var(--base-gray-500, #3B3B54);
+  box-shadow: 0px 4px 30px 0px rgba(0, 0, 0, 0.40);
+}
+
 
 ::placeholder{
   color:#7F7F98;
@@ -296,8 +351,7 @@ text-xs{
   .welcome-search{
     display: flex;
     height: 56px;
-    width: 311px;
-    padding: 0px 20px;
+    width: 331px;
     justify-content: center;
     align-items: center;
     align-self: stretch;
@@ -321,7 +375,7 @@ text-xs{
   }
 
   .actions-search{
-    width: 220px;
+    width: 265px;
   }
 
   .card{

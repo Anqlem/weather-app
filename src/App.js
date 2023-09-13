@@ -4,6 +4,8 @@ import "./App.css";
 import "./css/WeatherCard.css";
 import "./css/WeatherNextDays.css";
 
+import { AutoComplete } from "./components/CitiesAutocomplete";
+
 import {
   clearDBG,
   clearD,
@@ -42,7 +44,6 @@ const api = {
 };
 
 function App() {
-  const [query, setQuery] = useState("");
   const [weather, setWeather] = useState({});
   const [nextWeather, setNextWeather] = useState({});
   const [date, setDate] = useState({});
@@ -54,37 +55,37 @@ function App() {
   const [backgroundImage, setBackgroundImage] = useState("");
   const [nextBackgroundImage, setNextBackgroundImage] = useState({});
 
-  async function search(evt) {
-    const url1 = `${api.base}weather?q=${query}&appid=${api.key}&units=metric`;
-    const url2 = `${api.base}forecast?q=${query}&appid=${api.key}&units=metric`;
-    if (evt.key === "Enter") {
-      setIsLoading(true);
-      const res = await Promise.all([fetch(url1), fetch(url2)]);
-      const today = await res[0].json();
-      const next = await res[1].json();
-      var nextIcons = [];
-      var weatherArray = [];
-      var dates = [];
-      next.list.map((x, y) => {
-        if (y === 7 || y === 15 || y === 23 || y === 31 || y === 39) {
-          weatherArray.push(x);
-          nextIcons.push(codeMapping[x.weather[0].icon]);
-          var fullDates = dateBuilder(new Date(x.dt_txt));
-          dates.push(fullDates);
-        }
-      });
+  async function search(value) {
+    const url1 = `${api.base}weather?q=${value}&appid=${api.key}&units=metric`;
+    const url2 = `${api.base}forecast?q=${value}&appid=${api.key}&units=metric`;
 
-      setTimeout(() => {
-        setWeather(today);
-        setBackgroundImage(codeMapping[today.weather[0].icon]);
-        setDate(dates);
-        setNextBackgroundImage(nextIcons);
-        setNextWeather(weatherArray);
-        setQuery("");
-        setIsData(true);
-        setIsLoading(false);
-      }, 500);
-    }
+    console.log(value);
+
+    setIsLoading(true);
+    const res = await Promise.all([fetch(url1), fetch(url2)]);
+    const today = await res[0].json();
+    const next = await res[1].json();
+    var nextIcons = [];
+    var weatherArray = [];
+    var dates = [];
+    next.list.map((x, y) => {
+      if (y === 7 || y === 15 || y === 23 || y === 31 || y === 39) {
+        weatherArray.push(x);
+        nextIcons.push(codeMapping[x.weather[0].icon]);
+        var fullDates = dateBuilder(new Date(x.dt_txt));
+        dates.push(fullDates);
+      }
+    });
+
+    setTimeout(() => {
+      setWeather(today);
+      setBackgroundImage(codeMapping[today.weather[0].icon]);
+      setDate(dates);
+      setNextBackgroundImage(nextIcons);
+      setNextWeather(weatherArray);
+      setIsData(true);
+      setIsLoading(false);
+    }, 500);
   }
 
   const codeMapping = {
@@ -160,15 +161,7 @@ function App() {
             <span>Choose a location to view the weather forecast</span>
           </div>
           <div className="input-container">
-            <input
-              type="text"
-              className="welcome-search"
-              placeholder="Search..."
-              onChange={(e) => setQuery(e.target.value)}
-              value={query}
-              disabled={isLoading}
-              onKeyPress={search}
-            />
+            <AutoComplete className="welcome-search" onKeyPress={search} />
             {isLoading === true ? (
               <div className="icon-container">
                 <img src={loading} alt="loading" className="loader"></img>
@@ -189,15 +182,11 @@ function App() {
                   <img src={logo} alt="logo" />
                 </div>
                 <div className="input-container">
-                  <input
-                    type="text"
+                  <AutoComplete
                     className="actions-search"
-                    placeholder="Search..."
-                    onChange={(e) => setQuery(e.target.value)}
-                    value={query}
-                    disabled={isLoading}
                     onKeyPress={search}
                   />
+
                   {isLoading === true ? (
                     <div className="icon-container">
                       <img src={loading} alt="loading" className="loader"></img>
