@@ -3,7 +3,7 @@ import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import { debounce } from "@mui/material/utils";
 
-const GOOGLE_MAPS_API_KEY = "AIzaSyCH1BpPBQdjs_mRyVc36r8lg2E7OGsNg9A";
+const GOOGLE_MAPS_API_KEY = "AIzaSyCTwwP8Dvd6E4naWU4slkwcQNndbgMDe30";
 
 function loadScript(src, position, id) {
   if (!position) {
